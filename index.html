@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday My Bestiee 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* --- GENERAL STYLES --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+      color: white;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .hidden { display: none !important; }
+
+    /* --- MUSIC BUTTON --- */
+    #musicBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+      border: none;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* --- START SCREEN --- */
+    #startScreen {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #startScreen button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 30px;
+      background: #ff69b4;
+      color: white;
+      font-size: 1.1rem;
+      animation: bounce 2s infinite;
+      cursor: pointer;
+    }
+
+    /* --- HERO --- */
+    .hero { position: relative; height: 80vh; }
+    .hero img { width: 100%; height: 100%; object-fit: cover; }
+    .heroText { position: absolute; bottom: 50px; left: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+    /* --- MESSAGE --- */
+    .message { padding: 40px 20px; text-align: center; font-size: 1.1rem; }
+
+    /* --- FLIP GALLERY --- */
+    .flipGallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .flip-card { height: 280px; perspective: 1000px; }
+    .flip-inner {
+      width: 100%; height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    .flipped .flip-inner { transform: rotateY(180deg); }
+
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%; height: 100%;
+      backface-visibility: hidden;
+      border-radius: 30px;
+    }
+
+    .flip-front {
+      background: white;
+      padding: 12px 12px 40px 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .flip-front img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      border-radius: 20px;
+      border: 1px solid #f0f0f0;
+    }
+
+    .flip-back {
+      background: #ff69b4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transform: rotateY(180deg);
+      text-align: center;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      border: 4px solid white;
+    }
+
+    /* --- ENVELOPE SECTION --- */
+    .wishSection {
+      text-align: center;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #wishBtn {
+      padding: 15px 35px;
+      border: none;
+      border-radius: 40px;
+      background: #ff1493;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 300px;
+      height: 250px;
+      perspective: 1000px;
+      margin-top: 30px;
+    }
+
+    .envelope-wrapper { position: relative; width: 100%; height: 100%; cursor: pointer; }
+
+    .envelope-back {
+      position: absolute;
+      width: 100%; height: 100%;
+      background: #ffb6c1;
+      border-radius: 10px;
+      z-index: 1;
+    }
+
+    .paper {
+      position: absolute;
+      width: 260px; height: 220px;
+      background: white;
+      left: 20px; top: 15px;
+      border-radius: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+      z-index: 2;
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow-y: auto;
+      color: #444;
+    }
+
+    .paper img {
+      width: 90%;
+      background: white;
+      padding: 10px 10px 30px 10px;
+      border-radius: 15px;
+      margin-top: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
+    }
+
+    .envelope-front {
+      position: absolute;
+      width: 100%; height: 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .envelope-front::before {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; width: 0; height: 0;
+      border-left: 150px solid #ffb6c1;
+      border-right: 150px solid #ffb6c1;
+      border-top: 125px solid transparent; 
+      border-bottom: 125px solid #ff9fb1;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .flap-top {
+      position: absolute;
+      top: 0; width: 0; height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-top: 130px solid #ff8fab;
+      transform-origin: top;
+      transition: transform 0.7s ease-in-out;
+      z-index: 4;
+    }
+
+    .seal {
+      position: absolute;
+      width: 55px; height: 55px;
+      background: #f196a7;
+      border-radius: 50%;
+      top: 130px; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .open-flap .flap-top { transform: rotateX(180deg); z-index: 1; }
+    .open-flap .seal { opacity: 0; pointer-events: none; }
+    .show-paper .paper { top: -120px; }
+
+    .paper.final-out {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) scale(1.25);
+      z-index: 1000;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      height: auto;
+      max-height: 85vh;
+    }
+
+    /* FIXED SCREEN - NO SCROLL */
+    .letter-fixed body {
+      overflow: hidden !important;
+    }
+
+    .letter-fixed html {
+      overflow: hidden !important;
+    }
+
+    /* --- FOOTER & HEARTS --- */
+    footer { text-align: center; padding: 40px 20px; opacity: 0.8; }
+    
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      animation: floatUp 6s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes floatUp { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-110vh); opacity: 0; } }
+
+  </style>
+</head>
+<body>
+
+  <audio id="bgMusic" loop>
+    <source src="./music/bg.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="musicBtn" onclick="toggleMusic()">🔊</button>
+
+  <div id="startScreen">
+    <h1>Click The Button </h1>
+    <button onclick="startSite()">Open 🎁</button>
+  </div>
+
+  <div id="mainSite" class="hidden">
+    <section class="hero">
+      <img src="./images/img1.jpg" alt="My Bestiee">
+      <div class="heroText">
+        <h1>Happiest Birthdayyy</h1>
+        <h2>My Bestieee 💗</h2>
+      </div>
+    </section>
+
+    <section class="message">
+      <p>To my favorite human 💕 Today is all about you 😘💖 Tap the photos to flip the memories ✨</p>
+    </section>
+
+    <section class="flipGallery">
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img14.jpg"></div><div class="flip-back"><p>You are pure happiness 😘💗</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img13.jpg"></div><div class="flip-back"><p>Forever my bestie 🫶✨</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img12.jpg"></div><div class="flip-back"><p>Smile always 💕🌸</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img5.webp"></div><div class="flip-back"><p>So lucky to have you 😘💖</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img6.jpg"></div><div class="flip-back"><p>nothing more than youu 💞✨</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img7.jpg"></div><div class="flip-back"><p>cutieeee 😘💖</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img8.jpg"></div><div class="flip-back"><p>Forever smiles 🫶✨</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img9.jpg"></div><div class="flip-back"><p> just look at yourselff 💕🌸</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img10.jpg"></div><div class="flip-back"><p>Bestie forever 💞✨</p></div></div></div>
+      <div class="flip-card" onclick="flip(this)"><div class="flip-inner"><div class="flip-front"><img src="./images/img11.jpg"></div><div class="flip-back"><p>pure princess 😚💞✨</p></div></div></div>
+    </section>
+
+    <section class="wishSection">
+      <button id="wishBtn" onclick="showWish()">Read my wish for you 💌</button>
+      
+      <div id="wishContainer" class="hidden">
+        <div class="envelope-container">
+          <div class="envelope-wrapper" id="mainEnv">
+            <div class="envelope-back"></div>
+            <div class="paper" id="letter">
+              <h3 style="margin:0 0 10px 0; color:#ff4d6d; font-size: 16px;">Happiest Birthday Bestie 💖</h3>
+              <p style="font-size: 12px; color: #444; line-height: 1.5;">
+                You are my happiness, my comfort, and my safest place 🫶✨<br>
+Thank you for always being there for me, no matter what 😘<br>
+May your life always be filled with love, endless smiles, and success 💕🌸<br>
+Stay as beautiful and amazing as you already are 💗<br>
+I love you so, so, sooo much!😚💞♾️
+              </p>
+              <img src="./images/516372080_1193073319240817_3808582259008407612_n.jpg" alt="Memory">
+            </div>
+            <div class="envelope-front"></div>
+            <div class="flap-top"></div>
+            <div class="seal">🎀</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let musicPlaying = false;
+    const music = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicBtn");
+
+    function startSite() {
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("mainSite").classList.remove("hidden");
+
+      music.load(); 
+      music.volume = 0.4;
+      
+      let playPromise = music.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          musicPlaying = true;
+          musicBtn.innerText = "🔊";
+        }).catch(error => {
+          console.log("Playback prevented. User must click again.");
+          musicPlaying = false;
+          musicBtn.innerText = "🔇";
+        });
+      }
+
+      createHearts();
+    }
+
+    function toggleMusic() {
+      if (musicPlaying) { 
+        music.pause(); 
+        musicBtn.innerText = "🔇"; 
+      } else { 
+        music.play(); 
+        musicBtn.innerText = "🔊"; 
+      }
+      musicPlaying = !musicPlaying;
+    }
+
+    function flip(card) { card.classList.toggle("flipped"); }
+
+    function showWish() {
+      document.getElementById("wishContainer").classList.remove("hidden");
+      document.getElementById("wishBtn").classList.add("hidden");
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    const mainEnv = document.getElementById('mainEnv');
+    const letter = document.getElementById('letter');
+
+    mainEnv.addEventListener('click', () => {
+      if (!mainEnv.classList.contains('open-flap')) {
+        mainEnv.classList.add('open-flap');
+        setTimeout(() => { mainEnv.classList.add('show-paper'); }, 800);
+      }
+    });
+
+    letter.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (mainEnv.classList.contains('show-paper')) {
+        letter.classList.add('final-out');
+        // SCREEN LOCK - NO SCROLL
+        document.body.classList.add('letter-fixed');
+        document.documentElement.classList.add('letter-fixed');
+      }
+    });
+
+    function createHearts() {
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "💗";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (18 + Math.random() * 20) + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, 500);
+    }
+  </script>
+
+</body>
+</html>
